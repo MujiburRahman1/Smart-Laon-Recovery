@@ -1,147 +1,105 @@
-# 🏦 Smart Loan Recovery System
+# 🏦 Smart Loan Recovery System (React + Flask)
 
-A machine learning-powered system for analyzing borrower risk levels and assigning recovery strategies using K-Means clustering and Random Forest classification.
-
-## 🚀 Live Demo
-
-**Try it on Hugging Face Spaces**: [Smart Loan Recovery System](https://huggingface.co/spaces/your-username/smart-loan-recovery)
+ML-powered system to analyze borrower risk and assign recovery strategies. Frontend in React (TailwindCSS + Plotly.js), backend in Flask (Pandas + scikit-learn + Plotly).
 
 ## ✨ Features
 
-- **📊 Risk Segmentation**: K-Means clustering to categorize borrowers into Low/Medium/High risk
-- **🎯 Default Prediction**: Random Forest classifier to predict default probability
-- **📈 Interactive Visualizations**: Plotly charts for risk distribution and strategy analysis
-- **📋 Detailed Results**: Comprehensive borrower analysis with recovery strategies
-- **🔄 Real-time Processing**: Upload CSV files and get instant analysis
+- **📤 CSV Upload**: Upload borrower dataset
+- **📊 Risk Segmentation**: K-Means clustering → Low/Medium/High Risk
+- **🎯 Default Prediction**: Random Forest → default probability
+- **📋 Results Table**: Name, probability, assigned strategy
+- **📈 Insights Dashboard**: Interactive Plotly charts
 
-## 🛠️ Technology Stack
+## 🧱 Tech Stack
 
-- **Frontend**: Gradio (Beautiful web interface)
-- **Backend**: Python with scikit-learn
-- **ML Models**: K-Means clustering + Random Forest classification
-- **Visualization**: Plotly interactive charts
-- **Deployment**: Hugging Face Spaces
+- **Frontend**: React, TailwindCSS, Plotly.js
+- **Backend**: Flask, Pandas, scikit-learn, Plotly
 
-## 📊 Required CSV Format
+## 🧪 Sample Data
 
-Your CSV file should include these columns:
+Use `sample_data.csv` to test quickly. Required columns:
 
-| Column | Description | Example |
-|--------|-------------|---------|
-| `borrower_name` | Name of the borrower | "John Doe" |
-| `credit_score` | Credit score (300-850) | 750 |
-| `loan_amount` | Original loan amount | 50000 |
-| `days_past_due` | Days past due | 15 |
-| `total_paid` | Total amount paid so far | 30000 |
-| `age` | Borrower age | 35 |
-| `income` | Annual income | 75000 |
-| `employment_length` | Years of employment | 8 |
+| Column | Description |
+| --- | --- |
+| borrower_name | Name of the borrower |
+| credit_score | Credit score (300–850) |
+| loan_amount | Original loan amount |
+| days_past_due | Days past due |
+| total_paid | Total paid so far |
+| age | Borrower age |
+| income | Annual income |
+| employment_length | Years of employment |
 
-## 🎯 Recovery Strategies
+## ▶️ Run Locally (Windows)
 
-Based on risk analysis, the system assigns:
-
-- **🟢 Low Risk** → Automated reminders
-- **🟡 Medium Risk** → Settlement offers  
-- **🔴 High Risk** → Legal actions
-
-## 🚀 Deployment Options
-
-### Option 1: Hugging Face Spaces (Recommended)
-
-1. **Create a new Space**:
-   - Go to [huggingface.co/spaces](https://huggingface.co/spaces)
-   - Click "Create new Space"
-   - Choose "Gradio" as SDK
-   - Name your space: `smart-loan-recovery`
-
-2. **Upload files**:
-   - Upload `app.py` (main application)
-   - Upload `requirements.txt` (dependencies)
-   - Upload `sample_data.csv` (for testing)
-
-3. **Deploy**:
-   - The space will automatically build and deploy
-   - Get your public URL: `https://huggingface.co/spaces/your-username/smart-loan-recovery`
-
-### Option 2: Local Development
-
-```bash
-# Install dependencies
+1) Backend (Flask)
+```powershell
+cd server
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-
-# Run the application
 python app.py
+# Health check: http://127.0.0.1:5000/api/health
 ```
 
-## 📁 Project Structure
-
-```
-smart-loan-recovery/
-├── app.py                 # Main Gradio application
-├── requirements.txt       # Python dependencies
-├── sample_data.csv       # Sample data for testing
-└── README.md            # This file
-```
-
-## 🧪 Testing
-
-Use the included `sample_data.csv` file to test the system:
-
-1. Upload the CSV file
-2. Click "🚀 Analyze Data"
-3. View results in the tabs:
-   - **📊 Summary**: Overview and statistics
-   - **📈 Risk Analysis**: Interactive charts
-   - **📋 Results Table**: Detailed borrower data
-
-## 🔧 Customization
-
-### Adding New Features
-
-1. **New ML Models**: Add to `LoanRecoveryML` class
-2. **Additional Visualizations**: Extend the `process_csv_file` function
-3. **Custom Strategies**: Modify `_assign_strategy` method
-
-### Modifying Risk Levels
-
-Edit the `_get_risk_level` method in `app.py`:
-
-```python
-def _get_risk_level(self, cluster_id, default_prob):
-    if default_prob < 0.2:  # Adjust thresholds
-        return "Low Risk"
-    elif default_prob < 0.6:
-        return "Medium Risk"
-    else:
-        return "High Risk"
+2) Frontend (React)
+```powershell
+cd client
+# Create .env with the backend URL
+echo REACT_APP_API_URL=http://127.0.0.1:5000 > .env
+npm install
+npm start
+# App: http://localhost:3000
 ```
 
-## 📈 Performance
+If PowerShell blocks activation, run as Admin once:
+```powershell
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
 
-- **Processing Speed**: ~2-3 seconds for 1000 borrowers
-- **Accuracy**: 85%+ on synthetic test data
-- **Scalability**: Handles datasets up to 10,000 borrowers
+## 🌐 Deploy (free)
 
-## 🤝 Contributing
+- **Backend (Render)**
+  - Root directory: `server/`
+  - Build: `pip install -r requirements.txt`
+  - Start: `gunicorn app:app`
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test with sample data
-5. Submit a pull request
+- **Frontend (Vercel / Netlify)**
+  - Project root: `client/`
+  - Env var: `REACT_APP_API_URL=https://your-backend.onrender.com`
 
-## 📄 License
+## 🔌 API
 
-MIT License - feel free to use for commercial and personal projects.
+- **GET `/api/health`** → `{"status":"ok"}`
+- **POST `/api/upload`**
+  - Form-data: `file` (CSV)
+  - Response: borrowers with `default_probability`, `risk_level`, `recovery_strategy`
+- **GET `/api/summary`** → summary stats for charts
 
-## 🙏 Acknowledgments
+## 🗂️ Project Structure
 
-- **Gradio**: For the beautiful web interface
-- **scikit-learn**: For machine learning algorithms
-- **Plotly**: For interactive visualizations
-- **Hugging Face**: For free hosting and deployment
+```
+.
+├── client/                 # React app (Tailwind, Plotly.js)
+│   ├── src/
+│   └── package.json
+├── server/                 # Flask API (Pandas, scikit-learn)
+│   ├── app.py
+│   └── requirements.txt
+├── sample_data.csv         # Demo dataset
+└── README.md
+```
+
+## 🧰 Troubleshooting
+
+- Frontend cannot connect → check `REACT_APP_API_URL`
+- Port in use → change React port: `set PORT=3001 && npm start`
+- Windows build tools error (scikit-learn) → install VS Build Tools (C++), or use provided `server/requirements.txt` versions
+
+## 📝 License
+
+MIT — free for commercial and personal use.
 
 ---
 
-**Made with ❤️ for the fintech community**
+
